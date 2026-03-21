@@ -20,12 +20,15 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    const aiText = data.output_text || "（返答なし）";
+    let reply = "返答なし";
+    if (data.output && data.output[0] && data.output[0].content) {
+      reply = data.output[0].content[0].text;
+    }
 
-    res.status(200).json({ reply: aiText });
+    return res.status(200).json({ reply });
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "エラーが発生しました" });
+    return res.status(500).json({ error: "サーバーエラー" });
   }
 }
