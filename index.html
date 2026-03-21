@@ -1,92 +1,35 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>AIチャット</title>
-  <style>
-    body {
-      font-family: Arial;
-      max-width: 600px;
-      margin: 40px auto;
-      background: #f5f5f5;
-    }
-    #chat {
-      background: white;
-      padding: 10px;
-      height: 400px;
-      overflow-y: auto;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-    }
-    .message {
-      margin: 10px 0;
-    }
-    .user { color: blue; }
-    .ai { color: green; }
-    #inputArea {
-      margin-top: 10px;
-      display: flex;
-    }
-    input {
-      flex: 1;
-      padding: 10px;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-    }
-  </style>
-</head>
-<body>
-
-<h2>AIチャット！</h2>
-
-<div id="chat"></div>
-
-<div id="inputArea">
-  <input type="text" id="userInput" placeholder="メッセージを入力..." onkeydown="if(event.key==='Enter') sendMessage()">
-  <button onclick="sendMessage()">送信</button>
-</div>
-
-<script>
-  const chat = document.getElementById("chat");
-
-  async function sendMessage() {
-    const input = document.getElementById("userInput");
-    const userText = input.value.trim();
-    if (!userText) return;
-
-    addMessage("あなた: " + userText, "user");
-    input.value = "";
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: userText })
-      });
-
-      const data = await res.json();
-
-      addMessage("AI: " + (data.reply || "返答なし"), "ai");
-
-    } catch (error) {
-      console.error(error);
-      addMessage("エラーが発生しました", "ai");
-    }
+export default async function handler(request, response) {
+  if (request.method !== "POST") {
+    return response.status(405).json({ error: "Method not allowed" });
   }
 
-  function addMessage(text, className) {
-    const div = document.createElement("div");
-    div.className = "message " + className;
-    div.textContent = text;
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-  }
-</script>
+  try {
+    const { message } = request.body;
 
-</body>
-</html>
+    const apiRes = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4.1-mini",
+        input: message
+      })
+    });
+
+    const data = await apiRes.json();
+
+    // 👇 安全に取り出す（ここが重要）
+    let reply = "返答なし";
+    if (data.output && data.output[0] && data.output[0].content) {
+      reply = data.output[0].content[0].text;
+    }
+
+    return response.status(200).json({ reply });
+
+  } catch (error) {
+    console.error("ERROR:", error);
+    return response.status(500).json({ error: "サーバーエラー" });
+  }
+}
