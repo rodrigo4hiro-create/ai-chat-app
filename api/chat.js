@@ -39,9 +39,7 @@ export default async function handler(req, res) {
 
           for (const part of item.content) {
 
-            if (part.type === "output_text") {
-              reply = part.text
-            }
+           reply = part.text || part.output_text || reply
 
           }
 
