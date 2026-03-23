@@ -4,11 +4,42 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { message } = req.body;
+  try {
 
-  // テスト用ダミーAI
-  const reply = "AIテスト成功: " + message;
+    const { message } = req.body;
 
-  return res.status(200).json({ reply });
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "mistralai/mistral-7b-instruct",
+        messages: [
+          {
+            role: "user",
+            content: message
+          }
+        ]
+      })
+    });
+
+    const data = await response.json();
+
+    let reply = "AIエラー";
+
+    if (data.choices && data.choices.length > 0) {
+      reply = data.choices[0].message.content;
+    }
+
+    return res.status(200).json({ reply });
+
+  } catch (error) {
+
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
+
+  }
 
 }
