@@ -19,13 +19,13 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    console.log("OpenAI response:", data);
+
+    console.log("OpenAI response:", JSON.stringify(data));
 
     let reply = "No response";
 
     if (data.output && data.output.length > 0) {
       const item = data.output[0];
-
       if (item.content && item.content.length > 0) {
         reply = item.content[0].text;
       }
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ reply });
 
   } catch (error) {
-    console.error(error);
+    console.error("ERROR:", error);
     return res.status(500).json({ error: "Server error" });
   }
 }
