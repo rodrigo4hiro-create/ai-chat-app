@@ -1,44 +1,41 @@
-export default async function handler(req, res) {
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>AIチャット</title>
+</head>
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" })
-  }
+<body>
 
-  try {
+<h2>AIチャット</h2>
 
-    const { message } = req.body
+<input id="input" placeholder="メッセージを入力">
+<button onclick="send()">送信</button>
 
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4.1-mini",
-        input: message
-      })
-    })
+<div id="chat"></div>
 
-    const data = await response.json()
+<script>
 
-    let reply = JSON.stringify(data)
+async function send(){
 
-    if (data.output && data.output.length > 0) {
-      const item = data.output[0]
-      if (item.content && item.content.length > 0) {
-        reply = item.content[0].text
-      }
-    }
+const text = document.getElementById("input").value
 
-    return res.status(200).json({ reply })
+const res = await fetch("/api/chat",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({message:text})
+})
 
-  } catch (error) {
+const data = await res.json()
 
-    console.error(error)
-
-    return res.status(500).json({ error: "Server error" })
-
-  }
+document.getElementById("chat").innerText =
+"AI: " + data.reply
 
 }
+
+</script>
+
+</body>
+</html>
