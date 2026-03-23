@@ -29,4 +29,5 @@ if (data.output_text) {
   if (first.content && first.content.length > 0) {
     reply = first.content[0].text || "No response";
   }
+  console.log(data);
 }
