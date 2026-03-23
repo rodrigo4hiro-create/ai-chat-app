@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
 
   if (req.method !== "POST") {
-    return res.status(405).json({ reply: "Method not allowed" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
@@ -11,13 +11,11 @@ export default async function handler(req, res) {
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://vercel.app",
-        "X-Title": "ai-chat"
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
       },
       body: JSON.stringify({
-        model: "openchat/openchat-3.5"
+        model: "mistralai/mistral-7b-instruct",
         messages: [
           { role: "user", content: message }
         ]
@@ -26,9 +24,9 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    console.log("OpenRouter:", data);
+    console.log("AI:", JSON.stringify(data));
 
-    let reply = "No response";
+    let reply = "AIの返答を取得できません";
 
     if (data.choices && data.choices.length > 0) {
       reply = data.choices[0].message.content;
@@ -40,9 +38,7 @@ export default async function handler(req, res) {
 
     console.error(error);
 
-    return res.status(500).json({
-      reply: "Server error"
-    });
+    return res.status(500).json({ error: "Server error" });
 
   }
 
