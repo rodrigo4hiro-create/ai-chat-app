@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <title>AIチャット</title>
@@ -20,6 +20,8 @@ async function send(){
 
 const text = document.getElementById("input").value
 
+console.log("送信:",text)
+
 const res = await fetch("/api/chat",{
 method:"POST",
 headers:{
@@ -29,6 +31,8 @@ body:JSON.stringify({message:text})
 })
 
 const data = await res.json()
+
+console.log("API結果:",data)
 
 document.getElementById("chat").innerText =
 "AI: " + data.reply
