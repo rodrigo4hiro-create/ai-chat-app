@@ -8,7 +8,7 @@
 
 <body>
 
-<h2>AIチャット（動作確認版）</h2>
+<h2>AIチャット</h2>
 
 <input id="input" placeholder="メッセージ">
 <button onclick="send()">送信</button>
@@ -16,8 +16,6 @@
 <div id="chat"></div>
 
 <script>
-
-const API_KEY = "ここにAPIキー貼る"
 
 async function send(){
 
@@ -33,7 +31,8 @@ body:JSON.stringify({message:text})
 
 const data = await res.json()
 
-document.getElementById("chat").innerText = data.reply
+document.getElementById("chat").innerText = "AI: " + data.reply
+
 }
 
 </script>
