@@ -41,8 +41,8 @@ console.log("API:",data)
 
 let reply="No response"
 
-if(data.choices && data.choices.length>0){
-reply = data.choices[0].message.content
+if(data.reply){
+reply = data.reply
 }
 
 addMessage("AI: "+reply)
