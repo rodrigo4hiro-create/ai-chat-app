@@ -27,11 +27,11 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    let reply = "AIエラー";
+    let reply = "AIエラー"
 
-    if (data.choices && data.choices.length > 0) {
-      reply = data.choices[0].message.content;
-    }
+if (data.choices && data.choices.length > 0) {
+  reply = data.choices[0].message.content
+}
 
     return res.status(200).json({ reply });
 
