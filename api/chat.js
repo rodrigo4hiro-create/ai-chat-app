@@ -21,9 +21,12 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     let reply = "No response";
-    if (data.output && data.output[0] && data.output[0].content) {
-      reply = data.output[0].content[0].text;
-    }
+
+try {
+  reply = data.output[0].content[0].text;
+} catch (e) {
+  console.log("取り出し失敗:", data);
+}
 
     return res.status(200).json({ reply });
 
