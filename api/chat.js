@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
     console.log(data)
 
-    let reply = data.output_text || "No response"
+  let reply = JSON.stringify(data)
 
     return res.status(200).json({ reply })
 
