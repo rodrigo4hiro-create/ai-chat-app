@@ -20,27 +20,13 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 console.log("OpenAIの返り値:", data);
-  let reply = "No response";
+let reply = "No response";
 
-// ① シンプルな返り値
 if (data.output_text) {
   reply = data.output_text;
-} 
-// ② 配列の返り値
-else if (data.output && Array.isArray(data.output)) {
-  try {
-    reply = data.output
-      .map(o => o.content?.map(c => c.text).join(""))
-      .join("");
-  } catch (e) {
-    console.log("取り出し失敗:", data);
-  }
-}
-
-    return res.status(200).json({ reply });
-
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Server error" });
+} else if (data.output && data.output.length > 0) {
+  const first = data.output[0];
+  if (first.content && first.content.length > 0) {
+    reply = first.content[0].text || "No response";
   }
 }
