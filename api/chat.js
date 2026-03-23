@@ -20,12 +20,21 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    let reply = "No response";
+  let reply = "No response";
 
-try {
-  reply = data.output[0].content[0].text;
-} catch (e) {
-  console.log("取り出し失敗:", data);
+// ① シンプルな返り値
+if (data.output_text) {
+  reply = data.output_text;
+} 
+// ② 配列の返り値
+else if (data.output && Array.isArray(data.output)) {
+  try {
+    reply = data.output
+      .map(o => o.content?.map(c => c.text).join(""))
+      .join("");
+  } catch (e) {
+    console.log("取り出し失敗:", data);
+  }
 }
 
     return res.status(200).json({ reply });
