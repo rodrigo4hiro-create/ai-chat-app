@@ -16,7 +16,12 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "gpt-4.1-mini",
-        input: message
+       input: [
+  {
+    role: "user",
+    content: message
+  }
+]
       })
     })
 
