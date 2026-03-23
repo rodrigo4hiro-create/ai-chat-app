@@ -33,14 +33,7 @@ body:JSON.stringify({message:text})
 
 const data = await res.json()
 
-let reply = "No response"
-
-if(data.output && data.output.length>0){
-reply = data.output[0].content[0].text
-}
-
-document.getElementById("chat").innerText = reply
-
+document.getElementById("chat").innerText = data.reply
 }
 
 </script>
