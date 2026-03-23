@@ -16,38 +16,15 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "gpt-4.1-mini",
-       input: [
-  {
-    role: "user",
-    content: message
-  }
-]
+        input: message
       })
     })
 
     const data = await response.json()
 
-    console.log("OpenAI:", JSON.stringify(data))
+    console.log(data)
 
-    let reply = "No response"
-
-    if (data.output && data.output.length > 0) {
-
-      for (const item of data.output) {
-
-        if (item.content) {
-
-          for (const part of item.content) {
-
-          reply = JSON.stringify(data)
-
-          }
-
-        }
-
-      }
-
-    }
+    let reply = data.output_text || "No response"
 
     return res.status(200).json({ reply })
 
