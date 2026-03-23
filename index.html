@@ -9,18 +9,23 @@
 
 <h2>AIチャット</h2>
 
-<input id="input" placeholder="メッセージ入力">
-<button onclick="send()">送信</button>
-
 <div id="chat"></div>
+
+<input type="text" id="input" placeholder="メッセージ入力">
+<button onclick="send()">送信</button>
 
 <script>
 
 async function send(){
 
-const text = document.getElementById("input").value
+const input = document.getElementById("input")
+const text = input.value
 
-console.log("送信:",text)
+if(!text) return
+
+add("あなた: " + text)
+
+input.value = ""
 
 const res = await fetch("/api/chat",{
 method:"POST",
@@ -32,10 +37,23 @@ body:JSON.stringify({message:text})
 
 const data = await res.json()
 
-console.log("API結果:",data)
+console.log("API結果",data)
 
-document.getElementById("chat").innerText =
-"AI: " + data.reply
+let reply = "AIエラー"
+
+if(data.choices && data.choices.length > 0){
+reply = data.choices[0].message.content
+}
+
+add("AI: " + reply)
+
+}
+
+function add(msg){
+
+const div = document.createElement("div")
+div.textContent = msg
+document.getElementById("chat").appendChild(div)
 
 }
 
