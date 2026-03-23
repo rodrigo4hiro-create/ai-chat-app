@@ -37,7 +37,7 @@ body:JSON.stringify({message:text})
 
 const data = await res.json()
 
-add("AI: " + data.reply)
+add("AI: " + JSON.stringify(data))
 
 }
 
