@@ -22,7 +22,7 @@ export default async function handler(req, res) {
 
     const data = await response.json()
 
-    let reply = "No response"
+    let reply = JSON.stringify(data)
 
     if (data.output && data.output.length > 0) {
       const item = data.output[0]
