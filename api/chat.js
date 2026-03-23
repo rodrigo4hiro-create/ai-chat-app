@@ -17,15 +17,23 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: "mistralai/mistral-7b-instruct",
         messages: [
-          { role: "user", content: message }
+          {
+            role: "user",
+            content: message
+          }
         ]
       })
     });
 
     const data = await response.json();
 
-    // ★ここが重要（AIの返り値をそのまま返す）
-    return res.status(200).json(data);
+    let reply = "No response";
+
+    if (data.choices && data.choices.length > 0) {
+      reply = data.choices[0].message.content;
+    }
+
+    return res.status(200).json({ reply });
 
   } catch (error) {
 
