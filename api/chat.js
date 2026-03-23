@@ -39,7 +39,7 @@ export default async function handler(req, res) {
 
           for (const part of item.content) {
 
-           reply = part.text || part.output_text || reply
+          reply = JSON.stringify(data)
 
           }
 
