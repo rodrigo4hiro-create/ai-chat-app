@@ -11,7 +11,7 @@
 
 <div id="chat"></div>
 
-<input id="input" placeholder="メッセージ入力">
+<input type="text" id="input" placeholder="メッセージ入力">
 <button onclick="send()">送信</button>
 
 <script>
@@ -23,7 +23,7 @@ const text = input.value
 
 if(!text) return
 
-add("あなた: " + text)
+addMessage("あなた: "+text)
 
 input.value=""
 
@@ -37,16 +37,22 @@ body:JSON.stringify({message:text})
 
 const data = await res.json()
 
-add("AI: " + JSON.stringify(data))
+console.log("API:",data)
+
+let reply="No response"
+
+if(data.choices && data.choices.length>0){
+reply = data.choices[0].message.content
+}
+
+addMessage("AI: "+reply)
 
 }
 
-function add(msg){
-
+function addMessage(msg){
 const div=document.createElement("div")
 div.textContent=msg
 document.getElementById("chat").appendChild(div)
-
 }
 
 </script>
