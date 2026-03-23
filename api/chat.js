@@ -16,12 +16,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "gpt-4.1-mini",
-        input: [
-          {
-            role: "user",
-            content: message
-          }
-        ]
+        input: message
       })
     })
 
@@ -29,16 +24,8 @@ export default async function handler(req, res) {
 
     let reply = "No response"
 
-    if (data.output && data.output.length > 0) {
-
-      const item = data.output[0]
-
-      if (item.content && item.content.length > 0) {
-
-        reply = item.content[0].text
-
-      }
-
+    if (data.output_text) {
+      reply = data.output_text
     }
 
     return res.status(200).json({ reply })
