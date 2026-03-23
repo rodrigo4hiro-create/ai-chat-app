@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         "X-Title": "ai-chat"
       },
       body: JSON.stringify({
-        model: "mistralai/mistral-7b-instruct",
+        model: "openchat/openchat-3.5"
         messages: [
           { role: "user", content: message }
         ]
