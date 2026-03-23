@@ -19,20 +19,10 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    console.log("OpenAIの返り値:", data);
+    console.log(data);
 
-    let reply = "No response";
+    let reply = data.output_text || "No response";
 
-    if (data.output_text) {
-      reply = data.output_text;
-    } else if (data.output && data.output.length > 0) {
-      const first = data.output[0];
-      if (first.content && first.content.length > 0) {
-        reply = first.content[0].text || "No response";
-      }
-    }
-
-    // 👇 これが必要
     return res.status(200).json({ reply });
 
   } catch (error) {
