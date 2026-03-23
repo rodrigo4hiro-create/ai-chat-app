@@ -17,17 +17,20 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: "mistralai/mistral-7b-instruct",
         messages: [
-          {
-            role: "user",
-            content: message
-          }
+          { role: "user", content: message }
         ]
       })
     });
 
     const data = await response.json();
 
-    let reply = "No response";
+    console.log("OpenRouter response:", data);
+
+    let reply = "AI error";
+
+    if (data.error) {
+      reply = "API ERROR: " + data.error.message;
+    }
 
     if (data.choices && data.choices.length > 0) {
       reply = data.choices[0].message.content;
@@ -38,7 +41,10 @@ export default async function handler(req, res) {
   } catch (error) {
 
     console.error(error);
-    return res.status(500).json({ error: "Server error" });
+
+    return res.status(500).json({
+      reply: "SERVER ERROR"
+    });
 
   }
 
